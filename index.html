@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>MCQ Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      let answerQ;
+      window.addEventListener("load", function() {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "/question");
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            answerQ = response.answer
+            document.getElementById("question").innerHTML = response.question;
+          }
+        };
+        xhr.send();
+      });
+
+      function checkAnswer() {
+        const answer = document.getElementById("answer").value;
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "/question");
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (answer.toLowerCase() === answerQ.toLowerCase()) {
+              alert("Correct answer!");
+              location.reload();
+            } else {
+              alert(`Incorrect answer. Correct answer is: ${response.answer}`);
+              location.reload();
+            }
+          }
+        };
+        xhr.send();
+      }
+    </script>
+  </head>
+  <body style="height: 100vh;">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <div class="w-full h-full bg-blue-400 flex items-center justify-center opacity-80">
+      <div class="bg-white rounded shadow-sm w-5/6 h-5/6 p-4">
+        <h1 id="question" class="m-2 text-gray-800 font-bold text-lg" style="font-size: 250%;"></h1>
+        <input type="text" id="answer" placeholder="Your answer" class="p-2 m-2 border-2 rounded text-teal-500" style="font-size: 250%;">
+        <button onclick="checkAnswer()" class="m-2 rounded p-4 bg-teal-400 font-bold text-lg text-white" style="font-size: 250%;">Submit</button>
+      </div>
+    </div>
+  </body>
+</html>
